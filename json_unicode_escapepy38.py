@@ -1,23 +1,20 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 from cmd import Cmd
-from payload import encode_payload, send_payload
+
+def encode_payload(payload):
+    line = payload.encode("hex")
+    n = 2
+    groups = [line[i:i+n] for i in range(0, len(line), n)]
+    full = ''
+    for x in groups:
+        full = full + "\u00" + x
+    retVal = full
+    return retVal
 
 class loop(Cmd):
     prompt="> "
-
     def default(self, params):
         payload = encode_payload(params)
-        ret = send_payload(payload)
-        if type(ret) is list:
-            for v in ret:
-                if type(v) is dict:
-                    for val in v.values():
-                        print(val)
-                else:
-                    print(v)
-        else:
-            print(ret)
-        
-
+        print(payload)
 
 loop().cmdloop()
